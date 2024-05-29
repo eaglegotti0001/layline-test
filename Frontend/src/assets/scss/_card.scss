@@ -1,0 +1,86 @@
+.solution-card {
+  .container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: center;
+    padding-top: 60px;
+
+    background-color: white;
+
+    .icon {
+      width: 48px;
+      height: 48px;
+    }
+
+    .title {
+      color: rgb(17 24 39);
+    }
+
+    .content {
+      color: rgb(17 24 39);
+      font-size: 18px;
+    }
+
+    .detail {
+      display: none;
+    }
+
+    .image {
+      visibility: hidden;
+      width: 96px;
+      height: 96px;
+      margin-bottom: 30px;
+      opacity: 0;
+    }
+  }
+}
+
+.solution-card:hover {
+  .container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    text-align: start;
+    background-color: rgb(22 101 52);
+    padding-top: 10px;
+
+    .title {
+      color: rgb(243 244 246);
+    }
+
+    .icon {
+      width: 0;
+      height: 0;
+    }
+
+    .content {
+      display: none;
+      color: rgb(243 244 246);
+    }
+
+    .detail {
+      display: flex;
+      color: rgb(243 244 246);
+    }
+
+    .image {
+      visibility: visible;
+      width: 96px;
+      height: 96px;
+      margin-bottom: 0px;
+      opacity: 0.2;
+    }
+  }
+}
+
+.shape > svg {
+  transform: scale(2);
+  width: 100%;
+  height: auto;
+  transform-origin: top center;
+}
+
+.bg-gradient {
+  background: linear-gradient(180deg, rgba(22, 33, 37, 0.29) 0%, rgba(139, 114, 100, 0) 100%);
+}
