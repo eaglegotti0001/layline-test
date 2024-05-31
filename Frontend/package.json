@@ -2,6 +2,7 @@
   "name": "layline",
   "version": "0.0.0",
   "private": true,
+  "author": "Chih Hsiang Hu",
   "scripts": {
     "dev": "next dev -p 4001",
     "build": "next build",
@@ -35,7 +36,9 @@
     "react-scroll": "^1.9.0",
     "redux": "^4.2.1",
     "sass": "^1.69.4",
-    "sharp": "^0.33.2"
+    "sharp": "^0.33.2",
+    "socket.io": "^4.7.5",
+    "socket.io-client": "^4.7.5"
   },
   "devDependencies": {
     "@types/lodash-es": "^4.17.10",

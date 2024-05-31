@@ -1,20 +1,4 @@
-export enum QueryMode {
-  Hide,
-  Default,
-}
-
-export type QueryType = {
-  mode: QueryMode;
-  method: string;
-  endpoint: string;
-};
-
-export type ApiResponse = {
-  data?: any;
-  status: number;
-  statusText: string;
-  dismissable?: boolean;
-};
+import { appConfig } from './config';
 
 const hasLocalStorage = () => {
   return typeof window !== 'undefined';
@@ -49,24 +33,77 @@ export function clearAll() {
   }
 }
 
-export function getToken(): string | null {
-  const result = loadItem('auth');
-  if (result && result.success) {
-    return result.token;
+export function saveToken(token: string) {
+  if (hasLocalStorage()) {
+    localStorage.setItem('auth', token);
   }
+}
 
+export function getToken(): string | null {
+  if (hasLocalStorage()) {
+    return localStorage.getItem('auth');
+  }
   return null;
 }
 
-export function getCodeTableValue(list, code: string) {
-  let toReturn = '';
-  if (list && list.length > 0) {
-    for (let i = 0; i < list.length; i++) {
-      if (list[i].tableCd == code) {
-        toReturn = list[i].tableE;
-        break;
-      }
-    }
-  }
-  return toReturn;
+export const getURI = (endpoint: string) => {
+  return `${appConfig.baseUrl}${endpoint}`;
+};
+
+export async function get(endpoint: string): Promise<any> {
+  const token = getToken();
+
+  const response = await fetch(getURI(endpoint), {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+  });
+  return response.json();
+}
+
+export async function post(endpoint: string, body: any): Promise<any> {
+  const token = getToken();
+
+  const response = await fetch(getURI(endpoint), {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
+  return response.json();
+}
+
+export async function del(endpoint: string, id: string): Promise<any> {
+  const token = getToken();
+
+  const response = await fetch(getURI(`${endpoint}/${id}`), {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+  });
+  return response.json();
+}
+
+export async function put(endpoint: string, id: string, body: any): Promise<any> {
+  const token = getToken();
+
+  const response = await fetch(getURI(`${endpoint}/${id}`), {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
+  return response.json();
 }

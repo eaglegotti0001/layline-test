@@ -3,6 +3,7 @@ import { Service } from 'typedi';
 import { HttpException } from '@exceptions/httpException';
 import { User } from '@interfaces/users.interface';
 import { UserModel } from '@models/users.model';
+import { Project } from '@/interfaces/project.interface';
 
 @Service()
 export class UserService {
@@ -26,6 +27,15 @@ export class UserService {
     const createUserData: User = await UserModel.create({ ...userData, password: hashedPassword });
 
     return createUserData;
+  }
+
+  public async addNewProjectToUser(userId: string, project: Project): Promise<User> {
+    const user = await this.findUserById(userId);
+    if(user) {
+      user.projectsPosted.push(project._id);
+      return await this.updateUser(userId, user);
+    }    
+    return user;
   }
 
   public async updateUser(userId: string, userData: User): Promise<User> {

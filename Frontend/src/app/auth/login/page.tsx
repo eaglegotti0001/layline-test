@@ -1,8 +1,9 @@
 'use client';
 import { AuthRequest, signIn } from '@/lib/api';
+import { User, UserModel, setUser } from '@/state/reducers/project';
+import { saveToken } from '@/lib/utils';
 import { AppDispatch } from '@/state';
 import { setAuthenticated } from '@/state/reducers/authReducer';
-import { setUserData } from '@/state/reducers/userDataReducer';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Form, FormProps, Input } from 'antd';
 import { useRouter } from 'next/navigation';
@@ -11,15 +12,16 @@ import { useDispatch } from 'react-redux';
 export default function Login() {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
+
   const onFinish: FormProps<AuthRequest>['onFinish'] = body => {
     signIn(body)
       .then(res => {
         if (res) {
           const { token, user } = res;
-
           if (token) {
+            saveToken(token);
             dispatch(setAuthenticated(true));
-            dispatch(setUserData(user));
+            dispatch(setUser(new User(user)));
             router.push('/mktp/home');
           }
         }

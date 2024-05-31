@@ -1,14 +1,13 @@
 import { clearAll } from '@/lib/utils';
 import { AppDispatch, useAppSelector } from '@/state';
 import { setAuthenticated } from '@/state/reducers/authReducer';
+import { BellOutlined, DownOutlined } from '@ant-design/icons';
 import { faBars, faPowerOff, faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Button, Dropdown, Space } from 'antd';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import NavMenu, { NavMenuItem } from './navMenu';
-import { Dropdown, Space } from 'antd';
-import { DownOutlined, BellOutlined } from '@ant-design/icons';
-import { Button } from 'antd';
 
 export type NavBarProps = {
   toggle: () => void;
@@ -41,7 +40,7 @@ const Navbar = ({ toggle }: NavBarProps) => {
   };
 
   const isAuthenticated = useAppSelector(state => state.authReducer.isAuthed);
-  const userData = useAppSelector(state => state.userDataReducer.userData);
+  const userData = useAppSelector(state => state.userReducer.user);
 
   return (
     <div className="z-10 absolute shadow top-0 h-[70px] py-4 w-full bg-white">
@@ -59,7 +58,7 @@ const Navbar = ({ toggle }: NavBarProps) => {
 
           {isAuthenticated && (
             <div className="flex h-full items-center text-sm">
-              <Dropdown className="mr-4 border border-gray-400 hover:border-blue-primary rounded px-4 py-2" menu={{ items }} trigger={['click']}>
+              <Dropdown className="mr-8 border border-gray-400 hover:border-blue-primary rounded px-4 py-2" menu={{ items }} trigger={['click']}>
                 <a onClick={e => e.preventDefault()}>
                   <Space>
                     {items[0].label}
@@ -68,9 +67,9 @@ const Navbar = ({ toggle }: NavBarProps) => {
                 </a>
               </Dropdown>
 
-              <Button icon={<BellOutlined />} shape="circle" className="mr-4"></Button>
+              <Button icon={<BellOutlined />} shape="circle" className="mr-8"></Button>
 
-              {userData && <span className="mr-4">{userData.email}</span>}
+              {userData && <span className="mr-8">{userData.email}</span>}
 
               <button className="w-10 h-10 flex justify-center items-center border rounded-full hover:bg-gray-100 uppercase" onClick={() => setIsOpen(true)}>
                 <FontAwesomeIcon icon={faUser} style={{ width: 16, height: 16 }} />
