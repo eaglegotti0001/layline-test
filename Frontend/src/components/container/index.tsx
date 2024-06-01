@@ -103,8 +103,8 @@ export default function Container({ children }: { children: React.ReactNode }) {
     };
   };
 
-  const checkToken = async function () {
-    const token = getToken();
+  const checkToken = async function (token) {
+   
     if (token) {
       const result = await checkSession(token);
       const { isValid, user } = result;
@@ -113,15 +113,21 @@ export default function Container({ children }: { children: React.ReactNode }) {
         dispatch(setUser(new User(user)));
         if (path === '/') {
           router.push('mktp/home');
-        }
-        initSockets(token);
+        }        
       }
     }
   };
 
   useEffect(() => {
+    const token = getToken();
+
     if (!isAuthenticated) {
-      checkToken();
+      checkToken(token);
+    }
+    else {
+      if(token) {
+        initSockets(token);
+      }      
     }
   }, [isAuthenticated, dispatch]);
 
@@ -130,6 +136,7 @@ export default function Container({ children }: { children: React.ReactNode }) {
       redirect('/');
     }
   }
+  
 
   return (
     <Context.Provider value={contextValue}>

@@ -11,9 +11,9 @@ import { Server, Socket } from 'socket.io';
 export class SocketService {
   protected m_channel: UserChannel;
   protected m_user: User;
-  protected m_mainEngine: MainEngine;
+  protected m_mainEngine: SocketEngine;
 
-  constructor(user: User, mainEngine: MainEngine) {
+  constructor(user: User, mainEngine: SocketEngine) {
     this.m_user = user;
     this.m_mainEngine = mainEngine;
   }
@@ -73,32 +73,29 @@ export class UserChannel {
 }
 
 
-export abstract class Engine {
-  public onDisconnectFromServerSocket(serverName: string) {}
-}
+export abstract class SocketEngine {
 
-export abstract class MainEngine extends Engine {
-  protected m_mapUserIdToEmulator: Record<string, SocketService> = {};
+  protected m_mapUserIdToSocket: Record<string, SocketService> = {};
 
-  public async getNewEmulatorInstance(user: User, uiSocket: UISocket) {
+  public async getNewSocketServiceInstance(user: User, uiSocket: UISocket) {
     const newEmulator = new SocketService(user, this);
     await newEmulator.init(uiSocket);
     return newEmulator;
   }
 
   public async addUserChannel(user: User, socket: Socket, uiSocket: UISocket) {
-    if (!this.m_mapUserIdToEmulator[user._id]) {
-      this.m_mapUserIdToEmulator[user._id] = await this.getNewEmulatorInstance(user, uiSocket);
+    if (!this.m_mapUserIdToSocket[user._id]) {
+      this.m_mapUserIdToSocket[user._id] = await this.getNewSocketServiceInstance(user, uiSocket);
     }
 
-    const emulator = this.m_mapUserIdToEmulator[user._id];
+    const emulator = this.m_mapUserIdToSocket[user._id];
     if (emulator && emulator.userChannel) {
       emulator.userChannel.addSocket(socket);
     }
   }
 
   public getUserChannel(userId: string): UserChannel | null {
-    const emulator = this.m_mapUserIdToEmulator[userId];
+    const emulator = this.m_mapUserIdToSocket[userId];
     if (emulator) {
       return emulator.userChannel;
     }
@@ -106,19 +103,19 @@ export abstract class MainEngine extends Engine {
   }
 
   public removeUserChannel(user: User) {
-    if (this.m_mapUserIdToEmulator[user._id]) {
-      delete this.m_mapUserIdToEmulator[user._id];
+    if (this.m_mapUserIdToSocket[user._id]) {
+      delete this.m_mapUserIdToSocket[user._id];
     }
   }
 }
 
 
 export abstract class UISocket {
-  protected m_mainEngine: MainEngine;
+  protected m_mainEngine: SocketEngine;
   protected httpServer = createServer();
   protected m_io = new Server(this.httpServer, { cors: { origin: '*' } });
 
-  constructor(mainEngine: MainEngine) {
+  constructor(mainEngine: SocketEngine) {
     this.m_mainEngine = mainEngine;
   }
 

@@ -1,7 +1,7 @@
-import { MainEngine, UISocket } from "./ui.socket";
+import { SocketEngine, UISocket } from "./ui.socket";
 
 export class MainUISocket extends UISocket {
-  constructor(mainEngine: MainEngine) {
+  constructor(mainEngine: SocketEngine) {
     super(mainEngine);
   }
 

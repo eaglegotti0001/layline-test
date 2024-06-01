@@ -6,7 +6,7 @@ import { HttpException } from '@exceptions/httpException';
 import { DataStoredInToken, TokenData } from '@interfaces/auth.interface';
 import { User } from '@interfaces/users.interface';
 import { UserModel } from '@models/users.model';
-import { MainEngine } from '@/sockets/ui.socket';
+import { SocketEngine } from '@/sockets/ui.socket';
 import { MainUISocket } from '@/sockets/socketForUI';
 
 const createToken = (user: User): TokenData => {
@@ -17,14 +17,14 @@ const createToken = (user: User): TokenData => {
 }
 
 @Service()
-export class AuthService extends MainEngine {
+export class AuthService extends SocketEngine {
 
   public get socket(): MainUISocket {
     return this.m_uiSocket;
   }
 
   public getUISocket(userId: string) {
-    return this.m_mapUserIdToEmulator[userId];
+    return this.m_mapUserIdToSocket[userId];
   }
 
   private m_uiSocket = new MainUISocket(this);
